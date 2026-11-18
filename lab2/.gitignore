@@ -1,0 +1,16 @@
+
+# Pliki wykonywalne i kompilacyjne Nim
+*.exe
+*.dll
+*.o
+*.obj
+*.pdb
+nimcache/
+
+# Pliki tymczasowe
+*.tmp
+*.log
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db

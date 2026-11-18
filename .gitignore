@@ -14,3 +14,14 @@ nimcache/
 # Pliki systemowe
 .DS_Store
 Thumbs.db
+
+# Nim
+*.exe
+*.o
+*.obj
+*.pdb
+**/nimcache/
+**/.nimcache/
+
+# Temporary files
+*.tmp
