@@ -91,3 +91,34 @@ proc binet*(A, B: seq[float64], n, cutoff: int, s: var Stats): seq[float64] =
 
   result = newSeq[float64](n * n)
   multiplyBlock(A, B, result, 0, 0, 0, n, n, n, n, cutoff, false, s)
+
+
+# Mnozenie prostokatnych macierzy z uzyciem istniejacego Bineta.
+# A ma rozmiar rows x inner, a B ma rozmiar inner x cols.
+# Prostokatne bloki dopelniamy zerami do wspolnego kwadratu,
+# poniewaz podstawowa funkcja binet przyjmuje macierze kwadratowe.
+proc binetRect*(A, B: seq[float64],
+                rows, inner, cols, cutoff: int,
+                s: var Stats): seq[float64] =
+  if rows < 1 or inner < 1 or cols < 1 or cutoff < 1 or
+     A.len != rows * inner or B.len != inner * cols:
+    raise newException(ValueError, "Niepoprawne wymiary mnozenia")
+
+  let paddedSize = max(rows, max(inner, cols))
+  var paddedA = newSeq[float64](paddedSize * paddedSize)
+  var paddedB = newSeq[float64](paddedSize * paddedSize)
+
+  for i in 0..<rows:
+    for j in 0..<inner:
+      paddedA[i * paddedSize + j] = A[i * inner + j]
+
+  for i in 0..<inner:
+    for j in 0..<cols:
+      paddedB[i * paddedSize + j] = B[i * cols + j]
+
+  let paddedResult = binet(paddedA, paddedB, paddedSize, cutoff, s)
+  result = newSeq[float64](rows * cols)
+
+  for i in 0..<rows:
+    for j in 0..<cols:
+      result[i * cols + j] = paddedResult[i * paddedSize + j]
